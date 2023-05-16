@@ -3,10 +3,12 @@ import dotenv from 'dotenv';
 dotenv.config();
 import mongoose from 'mongoose';
 import UserModel from './models/User.js'
+import checkAuth from './utils/checkAuth.js'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import { registerValidation } from './validations/auth.js';
 import { validationResult } from 'express-validator';
+import User from './models/User.js';
 const app = express();
 const port = process.env.PORT;
 app.use(express.json());
@@ -40,7 +42,7 @@ app.post('/auth/register', registerValidation, async (req, res) => {
             {
                 _id: user._id,
             },
-            process.env.ID_TOKEN,
+            process.env.ID_KEY,
             {
                 expiresIn: '30d'
             }
@@ -58,7 +60,7 @@ app.post('/auth/register', registerValidation, async (req, res) => {
             message: 'Не вдалося зареєструватися',
         })
     }
-})
+});
 
 app.post('/auth/login', async (req, res) => {
     try {
@@ -78,7 +80,7 @@ app.post('/auth/login', async (req, res) => {
             {
                 _id: user._id,
             },
-            process.env.ID_TOKEN,
+            process.env.ID_KEY,
             {
                 expiresIn: '30d'
             }
@@ -93,6 +95,24 @@ app.post('/auth/login', async (req, res) => {
         console.log(error);
         res.status(500).json({
             message: 'Не вдалося авторизуватися',
+        })
+    }
+});
+
+app.get('/auth/me', checkAuth, async (req, res) => {
+    try {
+        const user = await UserModel.findById(req.userId);
+        if (!user) {
+            return res.status(404).json({
+                message: 'Невірний логін або пароль',
+            })
+        }
+        const { passwordHash, ...userData } = user._doc;
+        res.json(userData);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Нема доступа',
         })
     }
 });
