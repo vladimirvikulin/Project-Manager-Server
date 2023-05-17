@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 import mongoose from 'mongoose';
 import checkAuth from './utils/checkAuth.js'
-import { registerValidation } from './validations/auth.js';
+import { loginValidation, registerValidation } from './validations/auth.js';
 import { register, login, getMe } from './controllers/UserController.js';
 const app = express();
 const port = process.env.PORT;
@@ -15,7 +15,7 @@ mongoose
 
 app.post('/auth/register', registerValidation, register);
 
-app.post('/auth/login', login);
+app.post('/auth/login', loginValidation, login);
 
 app.get('/auth/me', checkAuth, getMe);
 
