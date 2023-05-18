@@ -1,18 +1,8 @@
 import UserModel from '../models/User.js'
-import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import { validationResult } from 'express-validator';
-const generateToken = (user) => {
-    return jwt.sign(
-        {
-            _id: user._id,
-        },
-        process.env.ID_KEY,
-        {
-            expiresIn: '30d'
-        }
-    );
-}
+import { generateToken }  from '../utils/generateToken.js'
+
 export const register = async (req, res) => {
     try {
         const errors = validationResult(req);
