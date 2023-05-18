@@ -63,3 +63,30 @@ export const create = async (req, res) => {
         })
     }
 }
+
+export const remove = async (req, res) => {
+    try {
+        const groupId = req.params.id;
+        GroupModel.findOneAndDelete({
+            _id: groupId,
+        }, (error, doc) => {
+            if (error) {
+                console.log(error);
+                return res.status(500).json({
+                    message: "Не вдалося видалити групу" 
+                });
+            }   
+            if (!doc) {
+                return res.status(404).json({
+                    message: "Група не знайдена"
+                });
+            }
+            res.json(doc);
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Не вдалося видалити групу',
+        })
+    }
+}

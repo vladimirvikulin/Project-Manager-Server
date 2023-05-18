@@ -24,6 +24,7 @@ app.get('/auth/me', checkAuth, UserController.getMe);
 app.get('/groups', GroupController.getAll);
 app.get('/groups/:id', GroupController.getOne);
 app.post('/groups', checkAuth, groupCreateValidation, GroupController.create);
+app.delete('/groups/:id', GroupController.remove)
 
 app.listen(port, (err) => {
     if (err) {
