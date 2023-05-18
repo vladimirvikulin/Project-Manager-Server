@@ -1,6 +1,18 @@
 import { validationResult } from 'express-validator';
 import GroupModel from '../models/Group.js'
 
+export const getAll = async (req, res) => {
+    try {
+        const groups = await GroupModel.find().populate('user').exec();
+        res.json(groups);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Не вдалося отримати групи',
+        })
+    }
+}
+
 export const create = async (req, res) => {
     try {
         const errors = validationResult(req);

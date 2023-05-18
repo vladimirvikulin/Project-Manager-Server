@@ -21,6 +21,7 @@ app.post('/auth/register', registerValidation, UserController.register);
 app.post('/auth/login', loginValidation, UserController.login);
 app.get('/auth/me', checkAuth, UserController.getMe);
 
+app.get('/groups', GroupController.getAll);
 app.post('/groups', checkAuth, groupCreateValidation, GroupController.create);
 
 app.listen(port, (err) => {
