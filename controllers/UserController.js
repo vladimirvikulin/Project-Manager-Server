@@ -2,7 +2,17 @@ import UserModel from '../models/User.js'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import { validationResult } from 'express-validator';
-
+const generateToken = (user) => {
+    return jwt.sign(
+        {
+            _id: user._id,
+        },
+        process.env.ID_KEY,
+        {
+            expiresIn: '30d'
+        }
+    );
+}
 export const register = async (req, res) => {
     try {
         const errors = validationResult(req);
@@ -10,25 +20,18 @@ export const register = async (req, res) => {
             return res.status(400).json(errors.array());
         }
 
-        const password = req.body.password;
+        const { fullName, email, password } = req.body;
+        
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(password, salt);
         const doc = new UserModel({
-            fullName: req.body.fullName,
-            email: req.body.email,
+            fullName,
+            email,
             passwordHash: hash,
         });
 
         const user = await doc.save();
-        const token = jwt.sign(
-            {
-                _id: user._id,
-            },
-            process.env.ID_KEY,
-            {
-                expiresIn: '30d'
-            }
-        );
+        const token = generateToken(user);
 
         const { passwordHash, ...userData } = user._doc;
         res.json({
@@ -46,27 +49,21 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
     try {
-        const user = await UserModel.findOne({ email: req.body.email });
+        const { email, password } = req.body;
+        const user = await UserModel.findOne({ email });
         if (!user) {
             return res.status(400).json({
                 message: 'Невірний логін або пароль'
             });
         }
-        const isValidPass = await bcrypt.compare(req.body.password, user._doc.passwordHash);
+        const isValidPass = await bcrypt.compare(password, user._doc.passwordHash);
+
         if (!isValidPass) {
             return res.status(400).json({
                 message: 'Невірний логін або пароль'
             });
         }
-        const token = jwt.sign(
-            {
-                _id: user._id,
-            },
-            process.env.ID_KEY,
-            {
-                expiresIn: '30d'
-            }
-        );
+        const token = generateToken(user);
 
         const { passwordHash, ...userData } = user._doc;
         res.json({
