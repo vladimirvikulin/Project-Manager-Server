@@ -13,6 +13,33 @@ export const getAll = async (req, res) => {
     }
 }
 
+export const getOne = async (req, res) => {
+    try {
+        const groupId = req.params.id;
+        GroupModel.findOne({
+            _id: groupId,
+        }, (error, doc) => {
+            if (error) {
+                console.log(error);
+                return res.status(500).json({
+                    message: "Не вдалося повернути групу" 
+                });
+            }   
+            if (!doc) {
+                return res.status(404).json({
+                    message: "Група не знайдена"
+                });
+            }
+            res.json(doc);
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Не вдалося отримати групу',
+        })
+    }
+}
+
 export const create = async (req, res) => {
     try {
         const errors = validationResult(req);
