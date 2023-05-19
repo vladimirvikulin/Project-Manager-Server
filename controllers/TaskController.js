@@ -23,3 +23,27 @@ export const getAll = async (req, res) => {
       });
     }
   };
+
+export const create = async (req, res) => {
+    try {
+        const groupId = req.params.groupId;
+        const task = req.body;
+        const group = await GroupModel.findOne({
+        _id: groupId,
+        user: req.userId
+        });
+        if (!group) {
+            return res.status(404).json({
+                message: "Група не знайдена"
+            });
+        }
+        group.tasks.push(task);
+        group.save();
+        res.json(group.tasks);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+          message: "Не вдалося створити завдання",
+        });
+    }
+};
