@@ -1,4 +1,3 @@
-import { validationResult } from 'express-validator';
 import GroupModel from '../models/Group.js'
 
 export const getAll = async (req, res) => {
@@ -42,10 +41,6 @@ export const getOne = async (req, res) => {
 
 export const create = async (req, res) => {
     try {
-        const errors = validationResult(req);
-        if(!errors.isEmpty()) {
-            return res.status(400).json(errors.array());
-        }
         const { title, tasks, completed, notCompleted } = req.body;
         const doc = new GroupModel({
             title,
