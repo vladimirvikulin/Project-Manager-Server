@@ -2,7 +2,7 @@ import GroupModel from '../models/Group.js'
 
 export const getAll = async (req, res) => {
     try {
-        const groups = await GroupModel.find().populate('user').exec();
+        const groups = await GroupModel.find({ user: req.userId }).exec();
         res.json(groups);
     } catch (error) {
         console.log(error);
@@ -17,6 +17,7 @@ export const getOne = async (req, res) => {
         const groupId = req.params.id;
         GroupModel.findOne({
             _id: groupId,
+            user: req.userId
         }, (error, doc) => {
             if (error) {
                 console.log(error);
@@ -64,6 +65,7 @@ export const remove = async (req, res) => {
         const groupId = req.params.id;
         GroupModel.findOneAndDelete({
             _id: groupId,
+            user: req.userId
         }, (error, doc) => {
             if (error) {
                 console.log(error);
@@ -93,6 +95,7 @@ export const update = async (req, res) => {
         GroupModel.findOneAndUpdate(
             {
                 _id: groupId,
+                user: req.userId
             }, 
             {
                 title,

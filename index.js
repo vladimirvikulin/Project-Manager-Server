@@ -22,8 +22,8 @@ app.post('/auth/register', registerValidation, handleValidationErrors, UserContr
 app.post('/auth/login', loginValidation, handleValidationErrors, UserController.login);
 app.get('/auth/me', checkAuth, UserController.getMe);
 
-app.get('/groups', GroupController.getAll);
-app.get('/groups/:id', GroupController.getOne);
+app.get('/groups', checkAuth, GroupController.getAll);
+app.get('/groups/:id', checkAuth, GroupController.getOne);
 app.post('/groups', checkAuth, groupCreateValidation, handleValidationErrors, GroupController.create);
 app.delete('/groups/:id', checkAuth, GroupController.remove)
 app.patch('/groups/:id', checkAuth, groupCreateValidation, handleValidationErrors, GroupController.update)
