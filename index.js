@@ -5,8 +5,10 @@ import checkAuth from './utils/checkAuth.js'
 import handleValidationErrors from './utils/handleValidationErrors.js';
 import { loginValidation, registerValidation } from './validations/auth.js';
 import { groupCreateValidation } from './validations/group.js';
+import { taskValidation } from './validations/task.js';
 import * as UserController from './controllers/UserController.js';
 import * as GroupController from './controllers/GroupController.js';
+import * as TaskController from './controllers/TaskController.js'
 
 dotenv.config();
 const app = express();
@@ -27,6 +29,8 @@ app.get('/groups/:id', checkAuth, GroupController.getOne);
 app.post('/groups', checkAuth, groupCreateValidation, handleValidationErrors, GroupController.create);
 app.delete('/groups/:id', checkAuth, GroupController.remove)
 app.patch('/groups/:id', checkAuth, groupCreateValidation, handleValidationErrors, GroupController.update)
+
+app.get('/tasks/:groupId', checkAuth, TaskController.getAll);
 
 app.listen(port, (err) => {
     if (err) {
