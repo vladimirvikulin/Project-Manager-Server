@@ -33,6 +33,7 @@ app.patch('/groups/:id', checkAuth, groupCreateValidation, handleValidationError
 app.get('/tasks/:groupId', checkAuth, TaskController.getAll);
 app.post('/tasks/:groupId', checkAuth, taskValidation, handleValidationErrors, TaskController.create);
 app.delete('/tasks/:groupId/:taskId', checkAuth, TaskController.remove)
+app.patch('/tasks/:groupId/:taskId', checkAuth, taskValidation, handleValidationErrors, TaskController.update);
 
 app.listen(port, (err) => {
     if (err) {
