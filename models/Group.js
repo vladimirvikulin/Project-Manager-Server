@@ -5,10 +5,20 @@ const GroupSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    tasks: {
-        type: Array,
-        required: true,
-    },
+    tasks: [{
+        title: {
+            type: String,
+            required: true,
+        },
+        status: {
+            type: Boolean,
+            required: true,
+        },
+        priority: {
+            type: Boolean,
+            required: true,
+        },
+    }],
     completed: {
         type: Number,
         required: true,
