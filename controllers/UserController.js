@@ -1,15 +1,9 @@
 import UserModel from '../models/User.js'
 import bcrypt from 'bcrypt'
-import { validationResult } from 'express-validator';
 import { generateToken }  from '../utils/generateToken.js'
 
 export const register = async (req, res) => {
     try {
-        const errors = validationResult(req);
-        if(!errors.isEmpty()) {
-            return res.status(400).json(errors.array());
-        }
-
         const { fullName, email, password } = req.body;
         
         const saltRounds = 10;
