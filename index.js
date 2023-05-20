@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
+import cors from 'cors'
 import checkAuth from './utils/checkAuth.js'
 import handleValidationErrors from './utils/handleValidationErrors.js';
 import { loginValidation, registerValidation } from './validations/auth.js';
@@ -14,6 +15,7 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT;
 app.use(express.json());
+app.use(cors());
 mongoose.set('strictQuery', false);
 mongoose
     .connect(process.env.DB_TOKEN)
