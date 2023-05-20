@@ -1,4 +1,5 @@
 import GroupModel from '../models/Group.js'
+import handleError  from '../utils/handleError.js';
 
 export const getAll = async (req, res) => {
     try {
@@ -83,10 +84,4 @@ export const update = async (req, res) => {
         console.log(error);
         handleError(res, "Не вдалося оновити завдання");
     }
-};
-
-const handleError = (res, message) => {
-    return res.status(500).json({
-        message: message,
-    });
 };

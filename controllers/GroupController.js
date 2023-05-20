@@ -1,4 +1,5 @@
 import GroupModel from '../models/Group.js'
+import handleError  from '../utils/handleError.js';
 
 export const getAll = async (req, res) => {
     try {
@@ -25,7 +26,6 @@ export const getOne = async (req, res) => {
         }
 
         res.json(group);
-        });
     } catch (error) {
         console.log(error);
         handleError(res, 'Не вдалося отримати групу');
@@ -105,9 +105,3 @@ export const update = async (req, res) => {
         handleError(res, 'Не вдалося оновити групу');
     }
 }
-
-const handleError = (res, message) => {
-    return res.status(500).json({
-        message,
-    });
-};
