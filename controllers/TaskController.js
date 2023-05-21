@@ -37,7 +37,8 @@ export const create = async (req, res) => {
                 message: "Група не знайдена"
             });
         }
-        res.json(group.tasks);
+        let lastIndex = group.tasks.length - 1;
+        res.json(group.tasks[lastIndex]);
     } catch (error) {
         console.log(error);
         handleError(res, "Не вдалося створити завдання");
