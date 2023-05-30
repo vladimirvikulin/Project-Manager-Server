@@ -17,6 +17,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Set up environment variables
+        run: echo "ID_KEY=${{ secrets.ID_KEY }}" >> $GITHUB_ENV
+        
       - name: Install dependencies
         run: npm install
 
