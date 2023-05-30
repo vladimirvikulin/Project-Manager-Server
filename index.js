@@ -2,7 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import cors from 'cors'
-import checkAuth from './utils/checkAuth.js'
+import checkAuth from './utils/chekAuth/checkAuth.js'
 import handleValidationErrors from './utils/handleValidationErrors.js';
 import { loginValidation, registerValidation } from './validations/auth.js';
 import { groupCreateValidation } from './validations/group.js';
