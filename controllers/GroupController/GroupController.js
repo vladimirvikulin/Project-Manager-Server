@@ -1,9 +1,9 @@
-import GroupModel from '../models/Group.js'
-import handleError  from '../utils/handleError.js';
+import GroupModel from '../../models/Group.js'
+import handleError  from '../../utils/handleError.js';
 
 export const getAll = async (req, res) => {
     try {
-        const groups = await GroupModel.find({ user: req.userId }).exec();
+        const groups = await GroupModel.find({ user: req.userId });
         res.json(groups);
     } catch (error) {
         console.log(error);
@@ -35,7 +35,7 @@ export const getOne = async (req, res) => {
 export const create = async (req, res) => {
     try {
         const { title, tasks, completed, notCompleted } = req.body;
-        const doc = new GroupModel({
+        const doc = await GroupModel.create({
             title,
             tasks,
             completed,
