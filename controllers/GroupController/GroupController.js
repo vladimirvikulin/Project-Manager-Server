@@ -1,5 +1,5 @@
-import GroupModel from '../models/Group.js'
-import handleError  from '../utils/handleError.js';
+import GroupModel from '../../models/Group.js'
+import handleError  from '../../utils/handleError.js';
 
 export const getAll = async (req, res) => {
     try {

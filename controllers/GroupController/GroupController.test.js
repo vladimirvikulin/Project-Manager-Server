@@ -1,4 +1,4 @@
-import GroupModel from '../models/Group.js';
+import GroupModel from '../../models/Group.js';
 import {
   getAll,
   getOne,
@@ -6,9 +6,9 @@ import {
   remove,
   update,
 } from './GroupController.js';
-import handleError from '../utils/handleError.js';
+import handleError from '../../utils/handleError.js';
 
-jest.mock('../models/Group.js', () => ({
+jest.mock('../../models/Group.js', () => ({
   find: jest.fn(),
   findOne: jest.fn(),
   findOneAndDelete: jest.fn(),
@@ -16,7 +16,7 @@ jest.mock('../models/Group.js', () => ({
   create: jest.fn(),
 }));
 
-jest.mock('../utils/handleError.js', () => jest.fn());
+jest.mock('../../utils/handleError.js', () => jest.fn());
 
 describe('getAll', () => {
   let req;

@@ -1,19 +1,19 @@
-import GroupModel from '../models/Group.js';
+import GroupModel from '../../models/Group.js';
 import {
   getAll,
   create,
   remove,
   update,
 } from './TaskController.js';
-import handleError from '../utils/handleError.js';
+import handleError from '../../utils/handleError.js';
 
-jest.mock('../models/Group.js', () => ({
+jest.mock('../../models/Group.js', () => ({
   findOne: jest.fn(),
   findByIdAndUpdate: jest.fn(),
   findOneAndUpdate: jest.fn(),
 }));
 
-jest.mock('../utils/handleError.js', () => jest.fn());
+jest.mock('../../utils/handleError.js', () => jest.fn());
 
 describe('getAll', () => {
   let req;

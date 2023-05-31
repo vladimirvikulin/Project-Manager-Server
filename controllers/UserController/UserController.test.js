@@ -1,15 +1,15 @@
 import bcrypt from 'bcrypt';
-import UserModel from '../models/User.js';
+import UserModel from '../../models/User.js';
 import {
   register,
   login,
   getMe
 } from './UserController.js';
-import { generateToken } from '../utils/generateToken/generateToken.js';
+import { generateToken } from '../../utils/generateToken/generateToken.js';
 
 jest.mock('bcrypt');
-jest.mock('../utils/generateToken/generateToken.js');
-jest.mock('../models/User.js');
+jest.mock('../../utils/generateToken/generateToken.js');
+jest.mock('../../models/User.js');
 
 describe('register', () => {
   afterEach(() => {
