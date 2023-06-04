@@ -51,10 +51,23 @@ The backend provides the following API endpoints:
 
 - PATCH /tasks/:groupId/:taskId: Update a task by ID within a specific group. Validates the request body using taskValidation. 
 
+## Сode reviews of my project
+
+- [Code review №1](https://github.com/vladimirvikulin/To-Do-List/pull/4) 
+- [Code review №2](https://github.com/vladimirvikulin/To-Do-List-Server/pull/2) 
+- [Code review №3](https://github.com/vladimirvikulin/To-Do-List-Server/pull/3) 
+- [Code review №4](https://github.com/vladimirvikulin/To-Do-List/pull/8) 
+
+## My code reviews
+
+- [Code review №1](https://github.com/danil2205/blitz-session-react/pull/3) 
+- [Code review №2](https://github.com/danil2205/blitz-session-react/pull/4) 
+- [Code review №3](https://github.com/danil2205/BlitzSession/pull/1) 
+- [Code review №4](https://github.com/danil2205/BlitzSession/pull/2) 
+
 ## Frontend
 
-[My app](https://github.com/vladimirvikulin/To-Do-List) 
-
+[Frontend](https://github.com/vladimirvikulin/To-Do-List) 
 
 ## Acknowledgements
 
