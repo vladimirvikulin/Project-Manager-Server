@@ -135,7 +135,6 @@ describe('login', () => {
         password: 'password123',
       },
     };
-    const errorMessage = 'Login failed';
     UserModel.findOne.mockResolvedValue(null);
     const res = {
       status: jest.fn().mockReturnThis(),
