@@ -18,6 +18,10 @@ const GroupSchema = new mongoose.Schema({
             type: Boolean,
             required: true,
         },
+        dependencies: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Group.tasks',
+        }],
     }],
     completed: {
         type: Number,
@@ -32,8 +36,8 @@ const GroupSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     }
-    }, {
-        timestamps: true,
+}, {
+    timestamps: true,
     },
 );
 

@@ -26,18 +26,30 @@ export const getAll = async (req, res) => {
 export const create = async (req, res) => {
     try {
         const groupId = req.params.groupId;
-        const task = req.body;
+        const { title, status, priority, dependencies } = req.body;
+
         const group = await GroupModel.findOneAndUpdate(
             { _id: groupId, user: req.userId },
-            { $push: { tasks: task } },
-            { new: true }
+            { 
+                $push: { 
+                    tasks: { 
+                        title, 
+                        status, 
+                        priority, 
+                        dependencies: dependencies || []
+                    } 
+                } 
+            },
+            { new: true, runValidators: true }
         );
+
         if (!group) {
             return res.status(404).json({
                 message: "Група не знайдена"
             });
         }
-        let lastIndex = group.tasks.length - 1;
+
+        const lastIndex = group.tasks.length - 1;
         res.json(group.tasks[lastIndex]);
     } catch (error) {
         console.log(error);
@@ -70,17 +82,35 @@ export const update = async (req, res) => {
     try {
         const groupId = req.params.groupId;
         const taskId = req.params.taskId;
-        const group = await GroupModel.findByIdAndUpdate(
-            groupId,
-            { $set: { "tasks.$[elem]": { ...req.body, _id: taskId } } },
-            { new: true, arrayFilters: [{ "elem._id": taskId }], runValidators: true }
-          );
-          if (!group) {
+        const { title, status, priority, dependencies } = req.body;
+
+        const group = await GroupModel.findOneAndUpdate(
+            { _id: groupId, user: req.userId },
+            { 
+                $set: { 
+                    "tasks.$[elem]": { 
+                        _id: taskId, 
+                        title, 
+                        status, 
+                        priority, 
+                        dependencies: dependencies || []
+                    } 
+                } 
+            },
+            { 
+                new: true, 
+                arrayFilters: [{ "elem._id": taskId }], 
+                runValidators: true 
+            }
+        );
+
+        if (!group) {
             return res.status(404).json({
-              message: "Група не знайдена"
+                message: "Група не знайдена"
             });
-          }
-          res.json(group.tasks);
+        }
+
+        res.json(group.tasks);
     } catch (error) {
         console.log(error);
         handleError(res, "Не вдалося оновити завдання");
