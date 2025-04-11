@@ -1,32 +1,32 @@
-import GroupModel from '../../models/Group.js'
-import handleError  from '../../utils/handleError.js';
+import GroupModel from '../../models/Group.js';
+import handleError from '../../utils/handleError.js';
 
 export const getAll = async (req, res) => {
     try {
-      const groupId = req.params.groupId;
-  
-      const group = await GroupModel.findOne({
-        _id: groupId,
-        user: req.userId
-      });
-  
-      if (!group) {
-        return res.status(404).json({
-          message: "Група не знайдена"
+        const groupId = req.params.groupId;
+
+        const group = await GroupModel.findOne({
+            _id: groupId,
+            user: req.userId
         });
-      }
-  
-      res.json(group.tasks);
+
+        if (!group) {
+            return res.status(404).json({
+                message: "Група не знайдена"
+            });
+        }
+
+        res.json(group.tasks);
     } catch (error) {
-      console.log(error);
+        console.log(error);
         handleError(res, "Не вдалося отримати завдання");
     }
-  };
+};
 
 export const create = async (req, res) => {
     try {
         const groupId = req.params.groupId;
-        const { title, status, priority, dependencies } = req.body;
+        const { title, status, priority, dependencies, duration, deadline } = req.body;
 
         const group = await GroupModel.findOneAndUpdate(
             { _id: groupId, user: req.userId },
@@ -36,7 +36,9 @@ export const create = async (req, res) => {
                         title, 
                         status, 
                         priority, 
-                        dependencies: dependencies || []
+                        dependencies: dependencies || [],
+                        duration: duration || 1,
+                        deadline: deadline || undefined,
                     } 
                 } 
             },
@@ -59,30 +61,30 @@ export const create = async (req, res) => {
 
 export const remove = async (req, res) => {
     try {
-      const groupId = req.params.groupId;
-      const taskId = req.params.taskId;
-      const group = await GroupModel.findOneAndUpdate(
-        { _id: groupId, user: req.userId },
-        { $pull: { tasks: { _id: taskId } } },
-        { new: true }
-      );
-      if (!group) {
-        return res.status(404).json({
-          message: "Група не знайдена"
-        });
-      }
-      res.json(group.tasks);
+        const groupId = req.params.groupId;
+        const taskId = req.params.taskId;
+        const group = await GroupModel.findOneAndUpdate(
+            { _id: groupId, user: req.userId },
+            { $pull: { tasks: { _id: taskId } } },
+            { new: true }
+        );
+        if (!group) {
+            return res.status(404).json({
+                message: "Група не знайдена"
+            });
+        }
+        res.json(group.tasks);
     } catch (error) {
-      console.log(error);
+        console.log(error);
         handleError(res, "Не вдалося видалити завдання");
     }
-  };
+};
 
 export const update = async (req, res) => {
     try {
         const groupId = req.params.groupId;
         const taskId = req.params.taskId;
-        const { title, status, priority, dependencies } = req.body;
+        const { title, status, priority, dependencies, duration, deadline } = req.body;
 
         const group = await GroupModel.findOneAndUpdate(
             { _id: groupId, user: req.userId },
@@ -93,7 +95,9 @@ export const update = async (req, res) => {
                         title, 
                         status, 
                         priority, 
-                        dependencies: dependencies || []
+                        dependencies: dependencies || [],
+                        duration: duration || 1,
+                        deadline: deadline || undefined,
                     } 
                 } 
             },

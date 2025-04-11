@@ -22,6 +22,15 @@ const GroupSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Group.tasks',
         }],
+        duration: {
+            type: Number,
+            required: true,
+            default: 1,
+        },
+        deadline: {
+            type: Date,
+            required: false,
+        },
     }],
     completed: {
         type: Number,
@@ -38,7 +47,6 @@ const GroupSchema = new mongoose.Schema({
     }
 }, {
     timestamps: true,
-    },
-);
+});
 
 export default mongoose.model('Group', GroupSchema);
