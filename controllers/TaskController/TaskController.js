@@ -63,17 +63,27 @@ export const remove = async (req, res) => {
     try {
         const groupId = req.params.groupId;
         const taskId = req.params.taskId;
+
         const group = await GroupModel.findOneAndUpdate(
             { _id: groupId, user: req.userId },
             { $pull: { tasks: { _id: taskId } } },
             { new: true }
         );
+
         if (!group) {
             return res.status(404).json({
                 message: "Група не знайдена"
             });
         }
-        res.json(group.tasks);
+
+        await GroupModel.updateMany(
+            { _id: groupId, "tasks.dependencies": taskId },
+            { $pull: { "tasks.$[].dependencies": taskId } }
+        );
+
+        const updatedGroup = await GroupModel.findById(groupId);
+
+        res.json(updatedGroup.tasks);
     } catch (error) {
         console.log(error);
         handleError(res, "Не вдалося видалити завдання");
