@@ -39,6 +39,7 @@ export const create = async (req, res) => {
                         dependencies: dependencies || [],
                         duration: duration || 1,
                         deadline: deadline || undefined,
+                        createdAt: new Date(),
                     } 
                 } 
             },

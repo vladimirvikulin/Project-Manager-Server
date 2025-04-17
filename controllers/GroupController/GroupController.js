@@ -34,12 +34,13 @@ export const getOne = async (req, res) => {
 
 export const create = async (req, res) => {
     try {
-        const { title, tasks, completed, notCompleted } = req.body;
+        const { title, tasks, completed, notCompleted, executorCount } = req.body;
         const doc = await GroupModel.create({
             title,
             tasks,
             completed,
             notCompleted,
+            executorCount: executorCount || 2,
             user: req.userId,
         });
         const group = await doc.save();
@@ -48,7 +49,7 @@ export const create = async (req, res) => {
         console.log(error);
         handleError(res, 'Не вдалося створити групу');
     }
-}
+};
 
 export const remove = async (req, res) => {
     try {
@@ -73,7 +74,7 @@ export const remove = async (req, res) => {
 
 export const update = async (req, res) => {
     try {
-        const { title, tasks, completed, notCompleted } = req.body;
+        const { title, tasks, completed, notCompleted, executorCount } = req.body;
         const groupId = req.params.id;
 
         const updatedGroup = await GroupModel.findOneAndUpdate(
@@ -86,6 +87,7 @@ export const update = async (req, res) => {
                 tasks,
                 completed,
                 notCompleted,
+                executorCount,
                 user: req.userId,
             },
             {
@@ -104,4 +106,4 @@ export const update = async (req, res) => {
         console.log(error);
         handleError(res, 'Не вдалося оновити групу');
     }
-}
+};

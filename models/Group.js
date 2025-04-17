@@ -31,6 +31,10 @@ const GroupSchema = new mongoose.Schema({
             type: Date,
             required: false,
         },
+        createdAt: {
+            type: Date,
+            default: Date.now,
+        },
     }],
     completed: {
         type: Number,
@@ -39,6 +43,10 @@ const GroupSchema = new mongoose.Schema({
     notCompleted: {
         type: Number,
         required: true,
+    },
+    executorCount: {
+        type: Number,
+        default: 2,
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,
