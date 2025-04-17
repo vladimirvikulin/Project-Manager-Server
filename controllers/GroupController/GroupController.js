@@ -1,5 +1,5 @@
-import GroupModel from '../../models/Group.js'
-import handleError  from '../../utils/handleError.js';
+import GroupModel from '../../models/Group.js';
+import handleError from '../../utils/handleError.js';
 
 export const getAll = async (req, res) => {
     try {
@@ -9,7 +9,7 @@ export const getAll = async (req, res) => {
         console.log(error);
         handleError(res, 'Не вдалося отримати групу');
     }
-}
+};
 
 export const getOne = async (req, res) => {
     try {
@@ -30,16 +30,14 @@ export const getOne = async (req, res) => {
         console.log(error);
         handleError(res, 'Не вдалося отримати групу');
     }
-}
+};
 
 export const create = async (req, res) => {
     try {
-        const { title, tasks, completed, notCompleted, executorCount } = req.body;
+        const { title, tasks, executorCount } = req.body;
         const doc = await GroupModel.create({
             title,
             tasks,
-            completed,
-            notCompleted,
             executorCount: executorCount || 2,
             user: req.userId,
         });
@@ -70,11 +68,11 @@ export const remove = async (req, res) => {
         console.log(error);
         handleError(res, 'Не вдалося видалити групу');
     }
-}
+};
 
 export const update = async (req, res) => {
     try {
-        const { title, tasks, completed, notCompleted, executorCount } = req.body;
+        const { title, tasks, executorCount } = req.body;
         const groupId = req.params.id;
 
         const updatedGroup = await GroupModel.findOneAndUpdate(
@@ -85,8 +83,6 @@ export const update = async (req, res) => {
             {
                 title,
                 tasks,
-                completed,
-                notCompleted,
                 executorCount,
                 user: req.userId,
             },
@@ -100,8 +96,8 @@ export const update = async (req, res) => {
                 message: "Група не знайдена"
             });
         }
-        res.json(updatedGroup);
 
+        res.json(updatedGroup);
     } catch (error) {
         console.log(error);
         handleError(res, 'Не вдалося оновити групу');

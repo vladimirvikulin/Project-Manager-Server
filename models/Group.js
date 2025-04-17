@@ -36,14 +36,6 @@ const GroupSchema = new mongoose.Schema({
             default: Date.now,
         },
     }],
-    completed: {
-        type: Number,
-        required: true,
-    },
-    notCompleted: {
-        type: Number,
-        required: true,
-    },
     executorCount: {
         type: Number,
         default: 2,
