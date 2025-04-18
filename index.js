@@ -25,12 +25,15 @@ mongoose
 app.post('/auth/register', registerValidation, handleValidationErrors, UserController.register);
 app.post('/auth/login', loginValidation, handleValidationErrors, UserController.login);
 app.get('/auth/me', checkAuth, UserController.getMe);
+app.post('/auth/invitations', checkAuth, UserController.manageInvitation);
 
 app.get('/groups', checkAuth, GroupController.getAll);
 app.get('/groups/:id', checkAuth, GroupController.getOne);
 app.post('/groups', checkAuth, groupCreateValidation, handleValidationErrors, GroupController.create);
 app.delete('/groups/:id', checkAuth, GroupController.remove)
 app.patch('/groups/:id', checkAuth, groupCreateValidation, handleValidationErrors, GroupController.update)
+app.post('/groups/:id/invite', checkAuth, GroupController.inviteUser);
+app.post('/groups/:id/remove-user', checkAuth, GroupController.removeUser);
 
 app.get('/tasks/:groupId', checkAuth, TaskController.getAll);
 app.post('/tasks/:groupId', checkAuth, taskValidation, handleValidationErrors, TaskController.create);
