@@ -34,6 +34,7 @@ app.delete('/groups/:id', checkAuth, GroupController.remove)
 app.patch('/groups/:id', checkAuth, groupCreateValidation, handleValidationErrors, GroupController.update)
 app.post('/groups/:id/invite', checkAuth, GroupController.inviteUser);
 app.post('/groups/:id/remove-user', checkAuth, GroupController.removeUser);
+app.patch('/groups/:id/permissions', checkAuth, GroupController.updatePermissions);
 
 app.get('/tasks/:groupId', checkAuth, TaskController.getAll);
 app.post('/tasks/:groupId', checkAuth, taskValidation, handleValidationErrors, TaskController.create);

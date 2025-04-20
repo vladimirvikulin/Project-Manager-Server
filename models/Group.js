@@ -64,6 +64,25 @@ const GroupSchema = new mongoose.Schema({
             default: Date.now,
         },
     }],
+    permissions: [{
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true,
+        },
+        canAddTasks: {
+            type: Boolean,
+            default: false,
+        },
+        canEditTasks: {
+            type: Boolean,
+            default: false,
+        },
+        canDeleteTasks: {
+            type: Boolean,
+            default: false,
+        },
+    }],
 }, {
     timestamps: true,
 });

@@ -234,6 +234,9 @@ export const removeUser = async (req, res) => {
         group.invitedUsers = group.invitedUsers.filter(
             invite => invite.userId.toString() !== userId.toString()
         );
+        group.permissions = group.permissions.filter(
+            perm => perm.userId.toString() !== userId.toString()
+        );
         await group.save();
 
         await UserModel.updateOne(
@@ -241,9 +244,74 @@ export const removeUser = async (req, res) => {
             { $pull: { pendingInvitations: { groupId } } }
         );
 
-        res.json({ message: 'Користувача видалено з групи' });
+        const updatedGroup = await GroupModel.findById(groupId)
+            .populate('members', 'fullName email')
+            .populate('user', 'fullName email');
+
+        res.json({ message: 'Користувача видалено з групи', group: updatedGroup });
     } catch (error) {
         console.log(error);
         handleError(res, 'Не вдалося видалити користувача');
+    }
+};
+
+export const updatePermissions = async (req, res) => {
+    try {
+        const groupId = req.params.id;
+        const { userId, canAddTasks = false, canEditTasks = false, canDeleteTasks = false } = req.body;
+
+        const group = await GroupModel.findOne({
+            _id: groupId,
+            user: req.userId,
+        });
+
+        if (!group) {
+            return res.status(404).json({
+                message: "Група не знайдена або ви не власник",
+            });
+        }
+
+        if (!group.members.includes(userId)) {
+            return res.status(400).json({
+                message: "Цей користувач не є учасником групи",
+            });
+        }
+
+        if (userId.toString() === req.userId.toString()) {
+            return res.status(400).json({
+                message: "Ви не можете змінювати дозволи для самого себе",
+            });
+        }
+
+        const permissionIndex = group.permissions.findIndex(
+            (perm) => perm.userId.toString() === userId.toString()
+        );
+
+        if (permissionIndex !== -1) {
+            group.permissions[permissionIndex] = {
+                userId,
+                canAddTasks,
+                canEditTasks,
+                canDeleteTasks,
+            };
+        } else {
+            group.permissions.push({
+                userId,
+                canAddTasks,
+                canEditTasks,
+                canDeleteTasks,
+            });
+        }
+
+        await group.save();
+
+        const updatedGroup = await GroupModel.findById(groupId)
+            .populate('members', 'fullName email')
+            .populate('user', 'fullName email');
+
+        res.json(updatedGroup);
+    } catch (error) {
+        console.log(error);
+        handleError(res, 'Не вдалося оновити дозволи');
     }
 };
