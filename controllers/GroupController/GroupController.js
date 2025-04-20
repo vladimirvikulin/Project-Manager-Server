@@ -209,12 +209,15 @@ export const removeUser = async (req, res) => {
 
         const group = await GroupModel.findOne({
             _id: groupId,
-            user: req.userId,
+            $or: [
+                { user: req.userId },
+                { members: req.userId },
+            ],
         });
 
         if (!group) {
             return res.status(404).json({
-                message: "Група не знайдена або ви не власник",
+                message: "Група не знайдена або ви не маєте доступу",
             });
         }
 
@@ -224,9 +227,19 @@ export const removeUser = async (req, res) => {
             });
         }
 
-        if (userId.toString() === req.userId.toString()) {
+        const isOwner = group.user.toString() === req.userId.toString();
+
+        const isRemovingSelf = userId.toString() === req.userId.toString();
+
+        if (!isRemovingSelf && !isOwner) {
+            return res.status(403).json({
+                message: "Ви можете видалити лише себе з групи, якщо ви не власник",
+            });
+        }
+
+        if (isRemovingSelf && isOwner) {
             return res.status(400).json({
-                message: "Ви не можете видалити самого себе",
+                message: "Власник не може вийти з групи через цю дію. Видаліть групу, якщо хочете її покинути",
             });
         }
 
@@ -248,7 +261,10 @@ export const removeUser = async (req, res) => {
             .populate('members', 'fullName email')
             .populate('user', 'fullName email');
 
-        res.json({ message: 'Користувача видалено з групи', group: updatedGroup });
+        res.json({
+            message: isRemovingSelf ? 'Ви успішно вийшли з групи' : 'Користувача видалено з групи',
+            group: updatedGroup,
+        });
     } catch (error) {
         console.log(error);
         handleError(res, 'Не вдалося видалити користувача');
