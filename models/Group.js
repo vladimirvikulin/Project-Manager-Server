@@ -35,11 +35,12 @@ const GroupSchema = new mongoose.Schema({
             type: Date,
             default: Date.now,
         },
+        assignedTo: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            default: null,
+        },
     }],
-    executorCount: {
-        type: Number,
-        default: 2,
-    },
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',

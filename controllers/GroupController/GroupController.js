@@ -43,11 +43,10 @@ export const getOne = async (req, res) => {
 
 export const create = async (req, res) => {
     try {
-        const { title, tasks, executorCount } = req.body;
+        const { title, tasks } = req.body;
         const doc = new GroupModel({
             title,
             tasks,
-            executorCount: executorCount || 2,
             user: req.userId,
             members: [req.userId], 
             invitedUsers: [],
@@ -94,7 +93,7 @@ export const remove = async (req, res) => {
 
 export const update = async (req, res) => {
     try {
-        const { title, tasks, executorCount } = req.body;
+        const { title, tasks } = req.body;
         const groupId = req.params.id;
 
         const updatedGroup = await GroupModel.findOneAndUpdate(
@@ -105,7 +104,6 @@ export const update = async (req, res) => {
             {
                 title,
                 tasks,
-                executorCount,
             },
             {
                 returnDocument: 'after',
@@ -261,6 +259,14 @@ export const removeUser = async (req, res) => {
         group.permissions = group.permissions.filter(
             perm => perm.userId.toString() !== userId.toString()
         );
+
+        group.tasks = group.tasks.map(task => {
+            if (task.assignedTo && task.assignedTo.toString() === userId.toString()) {
+                return { ...task, assignedTo: null };
+            }
+            return task;
+        });
+
         await group.save();
 
         await UserModel.updateOne(

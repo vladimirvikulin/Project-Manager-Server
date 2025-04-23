@@ -26,7 +26,7 @@ export const getAll = async (req, res) => {
 export const create = async (req, res) => {
     try {
         const groupId = req.params.groupId;
-        const { title, status, priority, dependencies, duration, deadline } = req.body;
+        const { title, status, priority, dependencies, duration, deadline, assignedTo } = req.body;
 
         const group = await GroupModel.findOne({
             _id: groupId,
@@ -51,6 +51,12 @@ export const create = async (req, res) => {
             }
         }
 
+        if (assignedTo && !group.members.some(member => member.toString() === assignedTo)) {
+            return res.status(400).json({
+                message: "Призначений користувач не є учасником групи",
+            });
+        }
+
         const groupUpdate = await GroupModel.findOneAndUpdate(
             { _id: groupId },
             {
@@ -63,6 +69,7 @@ export const create = async (req, res) => {
                         duration: duration || 1,
                         deadline: deadline || undefined,
                         createdAt: new Date(),
+                        assignedTo: assignedTo || null,
                     },
                 },
             },
@@ -142,7 +149,7 @@ export const update = async (req, res) => {
     try {
         const groupId = req.params.groupId;
         const taskId = req.params.taskId;
-        const { title, status, priority, dependencies, duration, deadline } = req.body;
+        const { title, status, priority, dependencies, duration, deadline, assignedTo } = req.body;
 
         const group = await GroupModel.findOne({
             _id: groupId,
@@ -167,6 +174,19 @@ export const update = async (req, res) => {
             }
         }
 
+        if (assignedTo && !group.members.some(member => member.toString() === assignedTo)) {
+            return res.status(400).json({
+                message: "Призначений користувач не є учасником групи",
+            });
+        }
+
+        const taskToUpdate = group.tasks.find(task => task._id.toString() === taskId);
+        if (!taskToUpdate) {
+            return res.status(404).json({
+                message: "Завдання не знайдено",
+            });
+        }
+
         const groupUpdate = await GroupModel.findOneAndUpdate(
             { _id: groupId },
             {
@@ -179,6 +199,8 @@ export const update = async (req, res) => {
                         dependencies: dependencies || [],
                         duration: duration || 1,
                         deadline: deadline || undefined,
+                        createdAt: taskToUpdate.createdAt,
+                        assignedTo: assignedTo || null,
                     },
                 },
             },
