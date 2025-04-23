@@ -160,20 +160,30 @@ export const inviteUser = async (req, res) => {
             });
         }
 
-        const existingInvitation = group.invitedUsers.find(
-            invite => invite.userId.toString() === user._id.toString() && invite.status === 'pending'
+        const existingPendingInvitation = group.invitedUsers.find(
+            (invite) => invite.userId.toString() === user._id.toString() && invite.status === 'pending'
         );
-        if (existingInvitation) {
+        if (existingPendingInvitation) {
             return res.status(400).json({
                 message: "Запрошення вже надіслано цьому користувачу",
             });
         }
 
+        group.invitedUsers = group.invitedUsers.filter(
+            (invite) => invite.userId.toString() !== user._id.toString() || invite.status !== 'declined'
+        );
+
         group.invitedUsers.push({
             userId: user._id,
             status: 'pending',
+            invitedAt: new Date(),
         });
         await group.save();
+
+        await UserModel.updateOne(
+            { _id: user._id },
+            { $pull: { pendingInvitations: { groupId, status: 'declined' } } }
+        );
 
         await UserModel.updateOne(
             { _id: user._id },
@@ -183,6 +193,7 @@ export const inviteUser = async (req, res) => {
                         groupId,
                         status: 'pending',
                         invitedBy: req.userId,
+                        invitedAt: new Date(),
                     },
                 },
             }

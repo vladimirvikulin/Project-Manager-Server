@@ -96,38 +96,39 @@ export const manageInvitation = async (req, res) => {
         }
 
         const user = await UserModel.findById(userId);
-        const invitation = user.pendingInvitations.find(
-            invite => invite.groupId.toString() === groupId && invite.status === 'pending'
+        const invitationIndex = user.pendingInvitations.findIndex(
+            (invite) => invite.groupId.toString() === groupId && invite.status === 'pending'
         );
 
-        if (!invitation) {
+        if (invitationIndex === -1) {
             return res.status(404).json({
                 message: "Запрошення не знайдено або вже оброблено",
             });
         }
 
-        invitation.status = action === 'accept' ? 'accepted' : 'declined';
-        await user.save();
-
         const group = await GroupModel.findById(groupId);
-        const groupInvitation = group.invitedUsers.find(
-            invite => invite.userId.toString() === userId.toString()
+        const groupInvitationIndex = group.invitedUsers.findIndex(
+            (invite) => invite.userId.toString() === userId.toString() && invite.status === 'pending'
         );
 
-        if (!groupInvitation) {
+        if (groupInvitationIndex === -1) {
             return res.status(404).json({
                 message: "Запрошення не знайдено в групі",
             });
         }
 
-        groupInvitation.status = action === 'accept' ? 'accepted' : 'declined';
-
         if (action === 'accept') {
+            user.pendingInvitations[invitationIndex].status = 'accepted';
+            group.invitedUsers[groupInvitationIndex].status = 'accepted';
             if (!group.members.includes(userId)) {
                 group.members.push(userId);
             }
+        } else {
+            user.pendingInvitations.splice(invitationIndex, 1);
+            group.invitedUsers.splice(groupInvitationIndex, 1); 
         }
 
+        await user.save();
         await group.save();
 
         const updatedGroup = await GroupModel.findById(groupId)
