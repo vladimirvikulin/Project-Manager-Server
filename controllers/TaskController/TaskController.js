@@ -12,14 +12,14 @@ export const getAll = async (req, res) => {
 
         if (!group) {
             return res.status(404).json({
-                message: "Група не знайдена або ви не маєте доступу",
+                message: "Group not found or you do not have access",
             });
         }
 
         res.json(group.tasks);
     } catch (error) {
         console.log(error);
-        handleError(res, "Не вдалося отримати завдання");
+        handleError(res, "Failed to retrieve tasks");
     }
 };
 
@@ -35,7 +35,7 @@ export const create = async (req, res) => {
 
         if (!group) {
             return res.status(404).json({
-                message: "Група не знайдена або ви не маєте доступу",
+                message: "Group not found or you do not have access",
             });
         }
 
@@ -46,14 +46,14 @@ export const create = async (req, res) => {
             );
             if (!userPermissions || !userPermissions.canAddTasks) {
                 return res.status(403).json({
-                    message: "У вас немає дозволу на додавання задач",
+                    message: "You do not have permission to add tasks",
                 });
             }
         }
 
         if (assignedTo && !group.members.some(member => member.toString() === assignedTo)) {
             return res.status(400).json({
-                message: "Призначений користувач не є учасником групи",
+                message: "The assigned user is not a member of the group",
             });
         }
 
@@ -78,7 +78,7 @@ export const create = async (req, res) => {
 
         if (!groupUpdate) {
             return res.status(404).json({
-                message: "Група не знайдена",
+                message: "Group not found",
             });
         }
 
@@ -86,7 +86,7 @@ export const create = async (req, res) => {
         res.json(groupUpdate.tasks[lastIndex]);
     } catch (error) {
         console.log(error);
-        handleError(res, "Не вдалося створити завдання");
+        handleError(res, "Failed to create the task");
     }
 };
 
@@ -102,7 +102,7 @@ export const remove = async (req, res) => {
 
         if (!group) {
             return res.status(404).json({
-                message: "Група не знайдена або ви не маєте доступу",
+                message: "Group not found or you do not have access",
             });
         }
 
@@ -113,7 +113,7 @@ export const remove = async (req, res) => {
             );
             if (!userPermissions || !userPermissions.canDeleteTasks) {
                 return res.status(403).json({
-                    message: "У вас немає дозволу на видалення задач",
+                    message: "You do not have permission to delete tasks",
                 });
             }
         }
@@ -126,7 +126,7 @@ export const remove = async (req, res) => {
 
         if (!groupUpdate) {
             return res.status(404).json({
-                message: "Група не знайдена",
+                message: "Group not found",
             });
         }
 
@@ -141,7 +141,7 @@ export const remove = async (req, res) => {
         res.json(updatedGroup.tasks);
     } catch (error) {
         console.log(error);
-        handleError(res, "Не вдалося видалити завдання");
+        handleError(res, "Failed to delete the task");
     }
 };
 
@@ -158,7 +158,7 @@ export const update = async (req, res) => {
 
         if (!group) {
             return res.status(404).json({
-                message: "Група не знайдена або ви не маєте доступу",
+                message: "Group not found or you do not have access",
             });
         }
 
@@ -169,21 +169,21 @@ export const update = async (req, res) => {
             );
             if (!userPermissions || !userPermissions.canEditTasks) {
                 return res.status(403).json({
-                    message: "У вас немає дозволу на редагування задач",
+                    message: "You do not have permission to edit tasks",
                 });
             }
         }
 
         if (assignedTo && !group.members.some(member => member.toString() === assignedTo)) {
             return res.status(400).json({
-                message: "Призначений користувач не є учасником групи",
+                message: "The assigned user is not a member of the group",
             });
         }
 
         const taskToUpdate = group.tasks.find(task => task._id.toString() === taskId);
         if (!taskToUpdate) {
             return res.status(404).json({
-                message: "Завдання не знайдено",
+                message: "Task not found",
             });
         }
 
@@ -213,7 +213,7 @@ export const update = async (req, res) => {
 
         if (!groupUpdate) {
             return res.status(404).json({
-                message: "Група не знайдена",
+                message: "Group not found",
             });
         }
 
@@ -223,6 +223,6 @@ export const update = async (req, res) => {
         res.json(updatedGroup.tasks);
     } catch (error) {
         console.log(error);
-        handleError(res, "Не вдалося оновити завдання");
+        handleError(res, "Failed to update the task");
     }
 };

@@ -1,11 +1,11 @@
 import { body } from 'express-validator';
 
 export const taskValidation = [
-    body('title', 'Введіть назву завдання').isLength({ min: 2 }).isString(),
-    body('status', 'Невірний формат статусу').isBoolean(),
-    body('priority', 'Невірний формат пріорітету').isBoolean(),
-    body('dependencies', 'Залежності мають бути масивом ID').optional().isArray(),
-    body('dependencies.*', 'Кожен елемент залежностей має бути валідним ObjectId').optional().isMongoId(),
-    body('duration', 'Тривалість має бути числом більше 0').isInt({ min: 1 }),
-    body('deadline', 'Дедлайн має бути валідною датою').optional().isISO8601(),
+    body('title', 'Enter the task title').isLength({ min: 2 }).isString(),
+    body('status', 'Invalid status format').isBoolean(),
+    body('priority', 'Invalid priority format').isBoolean(),
+    body('dependencies', 'Dependencies must be an array of IDs').optional().isArray(),
+    body('dependencies.*', 'Each dependency must be a valid ObjectId').optional().isMongoId(),
+    body('duration', 'Duration must be a number greater than 0').isInt({ min: 1 }),
+    body('deadline', 'Deadline must be a valid date').optional().isISO8601(),
 ];

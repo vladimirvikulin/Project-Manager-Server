@@ -13,7 +13,7 @@ export const getAll = async (req, res) => {
         res.json(groups);
     } catch (error) {
         console.log(error);
-        handleError(res, 'Не вдалося отримати групи');
+        handleError(res, 'Failed to retrieve groups');
     }
 };
 
@@ -30,14 +30,14 @@ export const getOne = async (req, res) => {
 
         if (!group) {
             return res.status(404).json({
-                message: "Група не знайдена або ви не маєте доступу",
+                message: "Group not found or you do not have access",
             });
         }
 
         res.json(group);
     } catch (error) {
         console.log(error);
-        handleError(res, 'Не вдалося отримати групу');
+        handleError(res, 'Failed to retrieve the group');
     }
 };
 
@@ -60,7 +60,7 @@ export const create = async (req, res) => {
         res.json(populatedGroup);
     } catch (error) {
         console.log(error);
-        handleError(res, 'Не вдалося створити групу');
+        handleError(res, 'Failed to create the group');
     }
 };
 
@@ -74,7 +74,7 @@ export const remove = async (req, res) => {
 
         if (!group) {
             return res.status(404).json({
-                message: "Група не знайдена або ви не власник",
+                message: "Group not found or you are not the owner",
             });
         }
 
@@ -84,10 +84,10 @@ export const remove = async (req, res) => {
         );
 
         await group.deleteOne();
-        res.json({ message: 'Група успішно видалена' });
+        res.json({ message: 'Group successfully deleted' });
     } catch (error) {
         console.log(error);
-        handleError(res, 'Не вдалося видалити групу');
+        handleError(res, 'Failed to delete the group');
     }
 };
 
@@ -112,14 +112,14 @@ export const update = async (req, res) => {
 
         if (!updatedGroup) {
             return res.status(404).json({
-                message: "Група не знайдена або ви не власник",
+                message: "Group not found or you are not the owner",
             });
         }
 
         res.json(updatedGroup);
     } catch (error) {
         console.log(error);
-        handleError(res, 'Не вдалося оновити групу');
+        handleError(res, 'Failed to update the group');
     }
 };
 
@@ -135,26 +135,26 @@ export const inviteUser = async (req, res) => {
 
         if (!group) {
             return res.status(404).json({
-                message: "Група не знайдена або ви не власник",
+                message: "Group not found or you are not the owner",
             });
         }
 
         const user = await UserModel.findOne({ email });
         if (!user) {
             return res.status(404).json({
-                message: "Користувач із такою електронною адресою не знайдений",
+                message: "User with this email not found",
             });
         }
 
         if (user._id.toString() === req.userId.toString()) {
             return res.status(400).json({
-                message: "Ви не можете запросити самого себе",
+                message: "You cannot invite yourself",
             });
         }
 
         if (group.members.includes(user._id)) {
             return res.status(400).json({
-                message: "Користувач уже є учасником групи",
+                message: "User is already a member of the group",
             });
         }
 
@@ -163,7 +163,7 @@ export const inviteUser = async (req, res) => {
         );
         if (existingPendingInvitation) {
             return res.status(400).json({
-                message: "Запрошення вже надіслано цьому користувачу",
+                message: "An invitation has already been sent to this user",
             });
         }
 
@@ -202,12 +202,12 @@ export const inviteUser = async (req, res) => {
             .populate('user', 'fullName email');
 
         res.json({
-            message: `Запрошення надіслано користувачу ${user.fullName}`,
+            message: `Invitation sent to user ${user.fullName}`,
             group: updatedGroup,
         });
     } catch (error) {
         console.log(error);
-        handleError(res, 'Не вдалося надіслати запрошення');
+        handleError(res, 'Failed to send the invitation');
     }
 };
 
@@ -226,13 +226,13 @@ export const removeUser = async (req, res) => {
 
         if (!group) {
             return res.status(404).json({
-                message: "Група не знайдена або ви не маєте доступу",
+                message: "Group not found or you do not have access",
             });
         }
 
         if (!group.members.includes(userId)) {
             return res.status(400).json({
-                message: "Цей користувач не є учасником групи",
+                message: "This user is not a member of the group",
             });
         }
 
@@ -242,13 +242,13 @@ export const removeUser = async (req, res) => {
 
         if (!isRemovingSelf && !isOwner) {
             return res.status(403).json({
-                message: "Ви можете видалити лише себе з групи, якщо ви не власник",
+                message: "You can only remove yourself from the group if you are not the owner",
             });
         }
 
         if (isRemovingSelf && isOwner) {
             return res.status(400).json({
-                message: "Власник не може вийти з групи через цю дію. Видаліть групу, якщо хочете її покинути",
+                message: "The owner cannot leave the group through this action. Delete the group if you want to leave",
             });
         }
 
@@ -279,12 +279,12 @@ export const removeUser = async (req, res) => {
             .populate('user', 'fullName email');
 
         res.json({
-            message: isRemovingSelf ? 'Ви успішно вийшли з групи' : 'Користувача видалено з групи',
+            message: isRemovingSelf ? 'You have successfully left the group' : 'User removed from the group',
             group: updatedGroup,
         });
     } catch (error) {
         console.log(error);
-        handleError(res, 'Не вдалося видалити користувача');
+        handleError(res, 'Failed to remove the user');
     }
 };
 
@@ -300,19 +300,19 @@ export const updatePermissions = async (req, res) => {
 
         if (!group) {
             return res.status(404).json({
-                message: "Група не знайдена або ви не власник",
+                message: "Group not found or you are not the owner",
             });
         }
 
         if (!group.members.includes(userId)) {
             return res.status(400).json({
-                message: "Цей користувач не є учасником групи",
+                message: "This user is not a member of the group",
             });
         }
 
         if (userId.toString() === req.userId.toString()) {
             return res.status(400).json({
-                message: "Ви не можете змінювати дозволи для самого себе",
+                message: "You cannot modify permissions for yourself",
             });
         }
 
@@ -345,6 +345,6 @@ export const updatePermissions = async (req, res) => {
         res.json(updatedGroup);
     } catch (error) {
         console.log(error);
-        handleError(res, 'Не вдалося оновити дозволи');
+        handleError(res, 'Failed to update permissions');
     }
 };

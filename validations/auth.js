@@ -1,12 +1,12 @@
 import { body } from 'express-validator'
 
 export const registerValidation = [
-    body('email', 'Невірний формат пошти').isEmail(),
-    body('password', 'Пароль повинен містити мінімум 5 символів').isLength({ min: 5 }),
-    body('fullName', 'Не вказано імені').isLength({ min: 3 }),
+    body('email', 'Invalid email format').isEmail(),
+    body('password', 'Password must be at least 5 characters long').isLength({ min: 5 }),
+    body('fullName', "Full name must be at least 3 characters long").isLength({ min: 3 }),
 ];
 
 export const loginValidation = [
-    body('email', 'Невірний формат пошти').isEmail(),
-    body('password', 'Пароль повинен містити мінімум 5 символів').isLength({ min: 5 }),
+    body('email', 'Invalid email format').isEmail(),
+    body('password', 'Password must be at least 5 characters long').isLength({ min: 5 }),
 ];

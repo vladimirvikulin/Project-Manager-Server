@@ -6,7 +6,14 @@ import { generateToken } from '../../utils/generateToken/generateToken.js';
 export const register = async (req, res) => {
     try {
         const { fullName, email, password } = req.body;
-        
+
+        const existingUser = await UserModel.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({
+                message: 'A user with this email already exists',
+            });
+        }
+
         const saltRounds = 10;
         const salt = await bcrypt.genSalt(saltRounds);
         const hash = await bcrypt.hash(password, salt);
@@ -28,7 +35,7 @@ export const register = async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).json({
-            message: 'Не вдалося зареєструватися',
+            message: 'Failed to register. Please try again.',
         });
     }
 };
@@ -39,14 +46,14 @@ export const login = async (req, res) => {
         const user = await UserModel.findOne({ email });
         if (!user) {
             return res.status(400).json({
-                message: 'Невірний логін або пароль'
+                message: 'User with this email not found'
             });
         }
         const isValidPass = await bcrypt.compare(password, user._doc.passwordHash);
 
         if (!isValidPass) {
             return res.status(400).json({
-                message: 'Невірний логін або пароль'
+                message: 'Invalid email or password'
             });
         }
         const token = generateToken(user);
@@ -59,7 +66,7 @@ export const login = async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).json({
-            message: 'Не вдалося авторизуватися',
+            message: 'Failed to login. Please try again.',
         });
     }
 };
@@ -71,7 +78,7 @@ export const getMe = async (req, res) => {
             .populate('pendingInvitations.invitedBy', 'fullName email');
         if (!user) {
             return res.status(404).json({
-                message: 'Невірний логін або пароль',
+                message: 'User not found',
             });
         }
         const { passwordHash, ...userData } = user._doc;
@@ -79,7 +86,7 @@ export const getMe = async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).json({
-            message: 'Нема доступу',
+            message: 'Access denied',
         });
     }
 };
@@ -91,7 +98,7 @@ export const manageInvitation = async (req, res) => {
 
         if (!['accept', 'decline'].includes(action)) {
             return res.status(400).json({
-                message: "Невірна дія. Використовуйте 'accept' або 'decline'",
+                message: "Invalid action. Use 'accept' or 'decline'",
             });
         }
 
@@ -102,7 +109,7 @@ export const manageInvitation = async (req, res) => {
 
         if (invitationIndex === -1) {
             return res.status(404).json({
-                message: "Запрошення не знайдено або вже оброблено",
+                message: "Invitation not found or already processed",
             });
         }
 
@@ -113,7 +120,7 @@ export const manageInvitation = async (req, res) => {
 
         if (groupInvitationIndex === -1) {
             return res.status(404).json({
-                message: "Запрошення не знайдено в групі",
+                message: "Invitation not found in the group",
             });
         }
 
@@ -136,13 +143,13 @@ export const manageInvitation = async (req, res) => {
             .populate('user', 'fullName email');
 
         res.json({
-            message: `Запрошення ${action === 'accept' ? 'прийнято' : 'відхилено'}`,
+            message: `Invitation ${action === 'accept' ? 'accepted' : 'declined'}`,
             group: updatedGroup,
         });
     } catch (error) {
         console.log(error);
         res.status(500).json({
-            message: 'Не вдалося обробити запрошення',
+            message: 'Failed to process the invitation',
         });
     }
 };
