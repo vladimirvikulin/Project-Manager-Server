@@ -14,6 +14,18 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    avatarUrl: {
+        type: String,
+        default: '',
+    },
+    phone: {
+        type: String,
+        default: '',
+    },
+    bio: {
+        type: String,
+        default: '',
+    },
     pendingInvitations: [{
         groupId: {
             type: mongoose.Schema.Types.ObjectId,

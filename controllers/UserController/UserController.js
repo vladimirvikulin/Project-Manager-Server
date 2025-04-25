@@ -2,6 +2,8 @@ import UserModel from '../../models/User.js';
 import GroupModel from '../../models/Group.js';
 import bcrypt from 'bcrypt';
 import { generateToken } from '../../utils/generateToken/generateToken.js';
+import fs from 'fs/promises';
+import path from 'path';
 
 export const register = async (req, res) => {
     try {
@@ -88,6 +90,54 @@ export const getMe = async (req, res) => {
         res.status(500).json({
             message: 'Access denied',
         });
+    }
+};
+
+export const updateProfile = async (req, res) => {
+    try {
+        const userId = req.userId;
+        const { fullName, phone, bio } = req.body;
+
+        const user = await UserModel.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        if (fullName) user.fullName = fullName;
+        if (phone !== undefined) user.phone = phone;
+        if (bio !== undefined) user.bio = bio;
+
+        if (req.file) {
+            if (user.avatarUrl) {
+                const uploadsDir = path.join(process.cwd(), 'uploads');
+                const oldFilePath = path.join(process.cwd(), user.avatarUrl);
+
+                if (oldFilePath.startsWith(uploadsDir)) {
+                    try {
+                        await fs.access(oldFilePath);
+                        await fs.unlink(oldFilePath);
+                    } catch (err) {
+                        console.log('Failed to delete old avatar:', err.message);
+                    }
+                } else {
+                    console.log('Invalid avatar path, skipping deletion:', user.avatarUrl);
+                }
+            }
+            user.avatarUrl = `/uploads/${req.file.filename}`;
+        }
+
+        await user.save();
+
+        const { passwordHash, ...userData } = user._doc;
+        res.json(userData);
+    } catch (error) {
+        console.log(error);
+        if (error.code === 'LIMIT_FILE_SIZE') {
+            return res.status(400).json({
+                message: 'File size exceeds 5 MB',
+            });
+        }
+        res.status(500).json({ message: 'Failed to update profile' });
     }
 };
 
