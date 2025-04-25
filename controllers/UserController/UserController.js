@@ -93,6 +93,35 @@ export const getMe = async (req, res) => {
     }
 };
 
+export const getUserById = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const requesterId = req.userId;
+
+        const user = await UserModel.findById(userId).select('-passwordHash');
+        if (!user) {
+            return res.status(404).json({
+                message: 'User not found',
+            });
+        }
+
+        const requesterGroups = await GroupModel.find({ members: requesterId });
+        const isInSameGroup = requesterGroups.some(group => group.members.includes(userId));
+        if (!isInSameGroup) {
+            return res.status(403).json({
+                message: 'You can only view profiles of users in your groups',
+            });
+        }
+
+        res.json(user);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Failed to fetch user data',
+        });
+    }
+};
+
 export const updateProfile = async (req, res) => {
     try {
         const userId = req.userId;

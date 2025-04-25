@@ -4,11 +4,13 @@ const UserSchema = new mongoose.Schema({
     fullName: {
         type: String,  
         required: true,
+        maxlength: 50,
     },
     email: {
         type: String,  
         required: true,
         unique: true,
+        maxlength: 50,
     },
     passwordHash: {
         type: String,
@@ -17,14 +19,17 @@ const UserSchema = new mongoose.Schema({
     avatarUrl: {
         type: String,
         default: '',
+        maxlength: 200,
     },
     phone: {
         type: String,
         default: '',
+        maxlength: 20,
     },
     bio: {
         type: String,
         default: '',
+        maxlength: 500,
     },
     pendingInvitations: [{
         groupId: {

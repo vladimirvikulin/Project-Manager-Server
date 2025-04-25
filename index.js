@@ -52,6 +52,7 @@ app.post('/auth/login', loginValidation, handleValidationErrors, UserController.
 app.get('/auth/me', checkAuth, UserController.getMe);
 app.patch('/auth/profile', checkAuth, upload.single('avatar'), UserController.updateProfile);
 app.post('/auth/invitations', checkAuth, UserController.manageInvitation);
+app.get('/users/:id', checkAuth, UserController.getUserById);
 
 app.get('/groups', checkAuth, GroupController.getAll);
 app.get('/groups/:id', checkAuth, GroupController.getOne);
