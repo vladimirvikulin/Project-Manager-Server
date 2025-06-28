@@ -1,10 +1,10 @@
-# My To-Do List+ (Server) 
+# Project Manager (Server) 
 
 ## Description 
 
-This is the backend component of the My To-Do List+ project, which provides the server-side functionality for managing tasks and groups. The backend is implemented using Express, and the database of choice is MongoDB. The server code is also covered with tests to ensure reliability.
+This is the backend component of the Project Manager project, providing robust server-side functionality for project planning and management. Built with Express and MongoDB, it supports secure authentication, user and project management, and advanced analytics (network diagrams, optimized Gantt charts). The server code includes tests to ensure reliability and is designed with Ukrainian localization in mind.
 
-## How to run 
+## How to run
 
 1. Clone the repository to your local machine 
 2. Navigate to the project directory in your terminal or command prompt 
@@ -25,31 +25,24 @@ $ npm test
 
 ## API Endpoints 
 
-The backend provides the following API endpoints: 
-
-- POST /auth/register: Register a new user. Validates the request body using registerValidation and creates a new user with hashed password.  
-
-- POST /auth/login: Authenticate a user. Validates the request body using loginValidation and generates a JWT token upon successful login. 
-
-- GET /auth/me: Retrieve user information based on the authenticated token. 
-
-- GET /groups: Retrieve all task groups for the authenticated user. 
-
-- GET /groups/:id: Retrieve a specific task group by ID. 
-
-- POST /groups: Create a new task group. Validates the request body using groupCreateValidation and adds it to the database. 
-
-- DELETE /groups/:id: Delete a task group by ID. 
-
-- PATCH /groups/:id: Update a task group by ID. Validates the request body using groupCreateValidation. 
-
-- GET /tasks/:groupId: Retrieve all tasks within a specific group. 
-
-- POST /tasks/:groupId: Create a new task within a specific group. Validates the request body using taskValidation. 
-
-- DELETE /tasks/:groupId/:taskId: Delete a task by ID within a specific group. 
-
-- PATCH /tasks/:groupId/:taskId: Update a task by ID within a specific group. Validates the request body using taskValidation. 
+- POST /auth/register: Register a new user. Validates the request body using registerValidation and creates a new user with a hashed password.
+- POST /auth/login: Authenticate a user. Validates the request body using loginValidation and generates a JWT token upon successful login.
+- GET /auth/me: Retrieve current user information based on the authenticated token.
+- PATCH /auth/profile: Update user profile, including avatar upload.
+- POST /auth/invitations: Manage user invitations to projects.
+- GET /users/:id: Retrieve user profile by ID.
+- GET /groups: Retrieve all projects for the authenticated user.
+- GET /groups/:id: Retrieve a specific project by ID.
+- POST /groups: Create a new project. Validates the request body using groupCreateValidation.
+- DELETE /groups/:id: Delete a project by ID.
+- PATCH /groups/:id: Update a project by ID. Validates the request body using groupCreateValidation.
+- POST /groups/:id/invite: Invite a user to a project by email.
+- POST /groups/:id/remove-user: Remove a user from a project.
+- PATCH /groups/:id/permissions: Update user permissions within a project.
+- GET /tasks/:groupId: Retrieve all tasks within a specific project.
+- POST /tasks/:groupId: Create a new task within a project. Validates the request body using taskValidation.
+- DELETE /tasks/:groupId/:taskId: Delete a task by ID within a project.
+- PATCH /tasks/:groupId/:taskId: Update a task by ID within a project. Validates the request body using taskValidation.
 
 ## Сode reviews of my project
 
@@ -67,7 +60,7 @@ The backend provides the following API endpoints:
 
 ## Frontend
 
-[Frontend](https://github.com/vladimirvikulin/To-Do-List) 
+[Frontend](https://github.com/vladimirvikulin/Project-Manager) 
 
 ## Acknowledgements
 
